@@ -43,9 +43,30 @@ pub enum TokenType {
     Super,
     This,
     True,
-    Var,
+    Let,
     While,
 
     Eof,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Object {} // TODO: Move it other file
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Token {
+    token: TokenType,
+    lexeme: String,
+    literal: Object,
+    line: usize,
+}
+
+impl Token {
+    pub fn new(token: TokenType, lexeme: String, literal: Object, line: usize) -> Self {
+        Token {
+            token,
+            lexeme,
+            literal,
+            line,
+        }
+    }
+}
