@@ -2,9 +2,12 @@ use std::{
     fs::File,
     io::{Read, Write, stdin, stdout},
 };
+mod scanner;
 mod token;
 
 use anyhow::{Context, Result};
+
+use crate::scanner::Scanner;
 
 pub fn run_file(path: &str) -> Result<()> {
     let mut source = String::new();
@@ -12,7 +15,7 @@ pub fn run_file(path: &str) -> Result<()> {
         .context("failed to open file")?
         .read_to_string(&mut source)
         .context("failed to read file")?;
-    run(source)
+    run(&source)
 }
 
 pub fn run_prompt() -> Result<()> {
@@ -27,10 +30,14 @@ pub fn run_prompt() -> Result<()> {
         if line.trim().is_empty() {
             return Ok(());
         }
-        run(line)?;
+        run(&line)?;
     }
 }
 
-pub fn run(_source: String) -> Result<()> {
-    todo!()
+pub fn run(source: &str) -> Result<()> {
+    let scanner = Scanner::new(source);
+    for i in scanner {
+        println!("{:?}", i)
+    }
+    Ok(())
 }

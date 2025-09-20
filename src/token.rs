@@ -24,9 +24,9 @@ pub enum TokenType {
     LessEqual,
 
     // Literals.
-    Identifier,
-    String,
-    Number,
+    Identifier(String),
+    String(String),
+    Number(usize),
 
     // Keywords.
     And,
@@ -45,28 +45,16 @@ pub enum TokenType {
     True,
     Let,
     While,
-
-    Eof,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Object {} // TODO: Move it other file
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Token {
-    token: TokenType,
-    lexeme: String,
-    literal: Object,
+    token_type: TokenType,
     line: usize,
 }
 
 impl Token {
-    pub fn new(token: TokenType, lexeme: String, literal: Object, line: usize) -> Self {
-        Token {
-            token,
-            lexeme,
-            literal,
-            line,
-        }
+    pub fn new(token_type: TokenType, line: usize) -> Self {
+        Token { token_type, line }
     }
 }
