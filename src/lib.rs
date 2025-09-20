@@ -2,10 +2,11 @@ use std::{
     fs::File,
     io::{Read, Write, stdin, stdout},
 };
+mod token;
 
-use anyhow::Context;
+use anyhow::{Context, Result};
 
-pub fn run_file(path: &str) -> anyhow::Result<()> {
+pub fn run_file(path: &str) -> Result<()> {
     let mut source = String::new();
     let _ = File::open(path)
         .context("failed to open file")?
@@ -14,7 +15,7 @@ pub fn run_file(path: &str) -> anyhow::Result<()> {
     run(source)
 }
 
-pub fn run_prompt() -> anyhow::Result<()> {
+pub fn run_prompt() -> Result<()> {
     let (mut stdout, stdin) = (stdout(), stdin());
     loop {
         print!(">>> ");
@@ -30,6 +31,6 @@ pub fn run_prompt() -> anyhow::Result<()> {
     }
 }
 
-pub fn run(_source: String) -> anyhow::Result<()> {
+pub fn run(_source: String) -> Result<()> {
     todo!()
 }
