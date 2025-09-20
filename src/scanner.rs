@@ -104,8 +104,35 @@ impl<'a> Iterator for Scanner<'a> {
                 TokenType::String(value)
             }
             ch if ch.is_ascii_digit() => self.read_number(ch),
+            ch if ch.is_ascii_alphabetic() => {
+                let mut value = String::from(ch);
+                value.push_str(&self.read_util(|ch| ch.is_ascii_alphabetic()));
+                lookup_ident(value)
+            }
             _ => panic!("Unexpected character: {ch}"),
         };
         Some(Token::new(token_type, self.line))
+    }
+}
+
+fn lookup_ident(ident: String) -> TokenType {
+    match ident.as_str() {
+        "and" => TokenType::And,
+        "class" => TokenType::Class,
+        "else" => TokenType::Else,
+        "false" => TokenType::False,
+        "for" => TokenType::For,
+        "fun" => TokenType::Fun,
+        "if" => TokenType::If,
+        "nil" => TokenType::Nil,
+        "or" => TokenType::Or,
+        "print" => TokenType::Print,
+        "return" => TokenType::Return,
+        "super" => TokenType::Super,
+        "this" => TokenType::This,
+        "true" => TokenType::True,
+        "let" => TokenType::Let,
+        "while" => TokenType::While,
+        _ => TokenType::Identifier(ident),
     }
 }
