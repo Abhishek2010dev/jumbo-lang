@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub enum TokenType {
     // Single-character tokens.
     LeftParen,
@@ -26,7 +26,7 @@ pub enum TokenType {
     // Literals.
     Identifier(String),
     String(String),
-    Number(usize),
+    Number(f64),
 
     // Keywords.
     And,
@@ -47,7 +47,7 @@ pub enum TokenType {
     While,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct Token {
     token_type: TokenType,
     line: usize,

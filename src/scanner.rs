@@ -33,6 +33,34 @@ impl<'a> Scanner<'a> {
             }
         }
     }
+
+    #[inline(always)]
+    fn read_util<F>(&mut self, condition: F) -> String
+    where
+        F: Fn(&char) -> bool,
+    {
+        let mut value = String::new();
+        while let Some(&ch) = self.chars.peek() {
+            if !condition(&ch) {
+                return value;
+            }
+            value.push(ch);
+            self.chars.next();
+        }
+        value
+    }
+
+    #[inline(always)]
+    fn read_number(&mut self, first_char: char) -> TokenType {
+        let mut number = String::from(first_char);
+        number.push_str(&self.read_util(|ch| ch.is_ascii_digit()));
+        if self.chars.peek() == Some(&'.') {
+            self.chars.next();
+            number.push('.');
+            number.push_str(&self.read_util(|ch| ch.is_ascii_digit()));
+        }
+        TokenType::Number(number.parse::<f64>().unwrap())
+    }
 }
 
 impl<'a> Iterator for Scanner<'a> {
@@ -61,6 +89,7 @@ impl<'a> Iterator for Scanner<'a> {
             '>' => TokenType::Greater,
             '/' if self.match_next('/') => {
                 self.skip_until('\n');
+                self.line += 1;
                 return self.next();
             }
             '/' => TokenType::Slash,
@@ -69,6 +98,12 @@ impl<'a> Iterator for Scanner<'a> {
                 return self.next();
             }
             ' ' | '\r' | '\t' => return self.next(),
+            '"' => {
+                let value = self.read_util(|c| *c != '"');
+                self.chars.next();
+                TokenType::String(value)
+            }
+            ch if ch.is_ascii_digit() => self.read_number(ch),
             _ => panic!("Unexpected character: {ch}"),
         };
         Some(Token::new(token_type, self.line))
